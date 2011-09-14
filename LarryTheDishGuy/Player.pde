@@ -3,6 +3,12 @@ class Player {
   Player() {
   }
   
-  void draw() {
+  public void draw() {
+  }
+  
+  void goLeft() {
+  }
+  
+  void goRight() {
   }
 }

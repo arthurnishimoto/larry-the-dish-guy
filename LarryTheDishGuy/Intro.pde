@@ -3,7 +3,7 @@ class Intro {
   Intro() {
   }
   
-  void draw() {
+  public void draw() {
   }
   
 }
