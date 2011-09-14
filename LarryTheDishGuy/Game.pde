@@ -11,6 +11,8 @@ class Game {
   }
 
   public void draw() {
+    theCounter.tick();
+    
     
     if( theCounter.gameTimePassed() ) 
       println ("GAME END"); 

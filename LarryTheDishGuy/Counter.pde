@@ -12,7 +12,7 @@ class Counter {
     counting = true;
   }
   
-  public stopCounting() {
+  public void stopCounting() {
     counting = false;
   }
   
