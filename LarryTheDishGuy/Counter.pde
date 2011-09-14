@@ -1,6 +1,7 @@
 class Counter {
 
   private int millisPassed;
+  private int startingMillis;
   private boolean counting;
   
   Counter() {
@@ -9,6 +10,7 @@ class Counter {
   }
   
   public void startCounting() {
+    startingMillis = millis();
     counting = true;
   }
   
@@ -18,13 +20,17 @@ class Counter {
   
   public void tick() {
     if( counting ) 
-      millisPassed += millis();
+      millisPassed = millis() - startingMillis;
   }
   
   public boolean gameTimePassed() {
     if ( millisPassed > 30000 ) return true;
     
     return false;
+  }
+  
+  public int getTime() {
+    return millisPassed;
   }
   
 }

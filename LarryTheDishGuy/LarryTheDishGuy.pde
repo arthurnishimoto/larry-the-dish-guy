@@ -11,3 +11,7 @@ void draw() {
   background(255);
   theGame.draw();
 }
+
+void keyPressed() {
+  theGame.handleKeyEvent();
+}
