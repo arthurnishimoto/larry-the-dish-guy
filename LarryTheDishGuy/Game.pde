@@ -5,7 +5,9 @@ class Game {
   Counter  theCounter;
   Table    []theTable;
   
-  boolean isServer;       // Whether this instance is server.
+
+  
+  Dish testDish;
   
   Game() {
     rightPlayer   = new Player("Player1", false);
@@ -44,7 +46,7 @@ class Game {
     leftPlayer.draw( theCounter.getTime() );
     
     if( theCounter.gameTimePassed() ) 
-      println ("GAME END"); 
+      println ("GAME END");     
   }
 
   public void handleKeyEvent() {
@@ -56,5 +58,5 @@ class Game {
       if( isServer )  rightPlayer.goRight();
       else            leftPlayer.goRight();
     }
-  }  
+  }
 }
