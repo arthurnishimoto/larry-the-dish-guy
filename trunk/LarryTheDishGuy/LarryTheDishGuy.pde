@@ -18,7 +18,7 @@ int currentScene = 0;
 void setup() {
   size(600, 400);
 
-  theGame = new Game();
+  theGame = new Game(this);
   dishTest = new DishTestScene();
 
   // Network
@@ -85,5 +85,12 @@ void serverEvent( Server server, Client client ) {
     c = new Client( this, client.ip(), clientPort );
     clientConnected = true;
   }
-} 
+}
 
+/**
+ *
+ * Event controlers for controlP5
+ */
+void Start(int value) {
+  theGame.start();
+}
