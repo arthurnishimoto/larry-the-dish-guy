@@ -5,19 +5,19 @@ class Table {
   private int tWidth;
   private int tHeight;
   private int id;
+  private PImage sprite;
   
   Table(int x, int y, int tWidth, int tHeight) {
     this.x = x;
     this.y = y;
     this.tWidth = tWidth;
     this.tHeight = tHeight;
+    this.sprite = loadImage("table.png");
   }
   
   public void draw() {
-    stroke(0);
-    fill(255);
-    rectMode(CENTER);
-    rect(x, y, tWidth, tHeight);
+    noStroke();
+    image(this.sprite, x - sprite.width, y - sprite.height, sprite.width * 2, sprite.height * 2);
   }
   
   public void checkCollision(Player aPlayer) {

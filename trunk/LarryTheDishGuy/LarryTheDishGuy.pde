@@ -6,11 +6,11 @@ DishTestScene dishTest;
 Server s; // Transmits data to other app
 Client c; // Receives data from other app
 
-boolean isServer = true;       // Whether this instance is server.
+boolean isServer = false;       // Whether this instance is server.
 boolean clientConnected = false;
 
 int serverPort = 12345;
-String serverIP = "127.0.0.1";
+String serverIP = "10.28.206.117";
 int clientPort = 23456;
 
 int currentScene = 0;
@@ -36,6 +36,7 @@ void setup() {
 }
 
 void draw() {
+  background(128,96,64);
   
   switch( currentScene ){
     case(0):
@@ -46,6 +47,7 @@ void draw() {
       break;
   }// switch
 
+  processNetwork();
 }
 
 void keyPressed() {
@@ -83,5 +85,5 @@ void serverEvent( Server server, Client client ) {
     c = new Client( this, client.ip(), clientPort );
     clientConnected = true;
   }
-}
-//just a test comment to make sure I can commit. 
+} 
+
