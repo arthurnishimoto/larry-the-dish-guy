@@ -43,6 +43,8 @@ class Game {
   public void start() {
     theIntro.hide();
     theCounter.startCounting();
+    
+    // Free up intro memory ??
   }
   
   public void draw() {
@@ -71,12 +73,33 @@ class Game {
 
   public void handleKeyEvent() {
     if( key == CODED && keyCode == LEFT ) {
-      if( isServer )  rightPlayer.goLeft();
-      else            leftPlayer.goLeft();
+      if( isServer )  {
+        if( leftPlayer.x + 35 < rightPlayer.x ) 
+          rightPlayer.goLeft();
+      }
+      else {
+        if( leftPlayer.x > 150 )
+          leftPlayer.goLeft();
+      }
     }
     else if( key == CODED && keyCode == RIGHT ) {
-      if( isServer )  rightPlayer.goRight();
-      else            leftPlayer.goRight();
+      if( isServer ) {
+        if( rightPlayer.x < 450 ) 
+        rightPlayer.goRight();
+      }
+      else {
+        if( rightPlayer.x - 35 > leftPlayer.x )
+          leftPlayer.goRight();
+      }
+    }
+    
+    if( key == ' ' ) {
+      if( isServer && leftPlayer.x + 35 > rightPlayer.x && leftPlayer.x + 35 < rightPlayer.x + 20) {
+        rightPlayer.goRight();
+        leftPlayer.goLeft();
+        leftPlayer.goLeft();
+        leftPlayer.goLeft();
+      }
     }
   }
   

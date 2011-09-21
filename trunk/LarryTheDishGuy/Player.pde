@@ -10,9 +10,11 @@ class Player {
 
   private int numberOfDishes;
 
+  // isRemote = true, then this instance is the client
   Player(String name, boolean isRemote) {
     // Default for now
-    x = 200;
+    if( isRemote )  x = 200;
+    else            x = 400;
     y = 0;
     numberOfDishes = 1;
     this.name = name;
@@ -54,11 +56,11 @@ class Player {
   }
 
   void goLeft() {
-    x-=2;
+    x-=4;
   }
 
   void goRight() {
-    x+=2;
+    x+=4;
   }
 }
 
