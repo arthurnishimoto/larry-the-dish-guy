@@ -16,6 +16,7 @@ class Table {
   }
   
   public void draw() {
+    imageMode(CORNER);
     noStroke();
     image(this.sprite, x - sprite.width, y - sprite.height, sprite.width * 2, sprite.height * 2);
   }

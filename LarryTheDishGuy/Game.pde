@@ -17,7 +17,10 @@ class Game {
     this.theApplet = theApplet;
     
     rightPlayer   = new Player("Player1", false);
+    rightPlayer.x = 400;
+    
     leftPlayer    = new Player("Player2", true);
+    
     theCounter    = new Counter();
     isServer      = true;
     
@@ -54,6 +57,7 @@ class Game {
     }
     else { // Game has started!
       theCounter.tick();
+      imageMode(CORNER);
       image(backgroundImage, 0, 0, width, height);
       
       // Draw the tables
@@ -112,6 +116,14 @@ class Game {
       case(DRAGGED):
         break;
       case(RELEASED):
+        if( key == CODED && keyCode == LEFT ) {
+          if( isServer )  rightPlayer.stopForce();
+          else            leftPlayer.stopForce();
+        }
+        else if( key == CODED && keyCode == RIGHT ) {
+          if( isServer )  rightPlayer.stopForce();
+          else            leftPlayer.stopForce();
+        }
         break;
     }
   }

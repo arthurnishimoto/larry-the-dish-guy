@@ -1,9 +1,10 @@
 import controlP5.*;
 
+PFont font;
 class Intro {
   
   private PApplet theApplet;
-  private PFont font;
+  
   
   public boolean enabled;
   
