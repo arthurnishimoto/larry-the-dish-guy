@@ -20,6 +20,7 @@ class Dish{
   float tiltThreshold = 0;
   float distanceThreshold = 0;
   
+  float slideSpeed = 0.05;
   
   // Test mouse controls
   int lastMouseX, lastMouseY;
@@ -27,6 +28,8 @@ class Dish{
   Dish parentDish;
   float slideX = 0;
   float slideY = 0;
+  
+  int nDishesAbove = 0;
   
   PImage dishImage;
   Dish(){
@@ -38,28 +41,41 @@ class Dish{
     dishImage = loadImage("plate.png");
   }// CTOR
   
-  Dish( Dish p, float x, float y, int _h ){
+  Dish( Dish p, float x, float y, int _h, int _nDishesAbove ){
     parentDish = p;
     xPos = x;
     yPos = y;
     w = 100;
     h = _h;
+    nDishesAbove = _nDishesAbove;
     dishImage = loadImage("plate.png");
   }// CTOR
   
   void draw(){
+    imageMode(CENTER);
     rectMode(CENTER);
     
     if( parentDish != null && state == PLAY){
+      if( currentTilt != 0 && dist( xPos, yPos, parentDish.xPos, parentDish.yPos ) > dishImage.width * 0.7 ){
+        state = FALLING;
+      }
+      if( abs(currentTilt) > radians(70) ){
+        state = FALLING;
+      }
+      //println( dist( xPos, yPos, parentDish.xPos, parentDish.yPos ) );
       currentTilt = parentDish.currentTilt;
       
       xPos = parentDish.xPos + 0 * cos(currentTilt) + slideX;
       yPos = parentDish.yPos + slideX * sin(currentTilt) - h;
       
+      float slideSpeedWMass = slideSpeed * ( nDishesAbove / (float)nDishes );
       if( currentTilt > 0 )
-        slideX += 0.1;
+        slideX += slideSpeedWMass;
       else if( currentTilt < 0 )
-        slideX -= 0.1;
+        slideX -= slideSpeedWMass;
+      //textFont( font, 10 );
+      //fill(255);
+      //text( slideSpeedWMass , xPos + 20, yPos );
     } else if( parentDish != null && state == FALLING ){
       currentTilt = parentDish.currentTilt;
       

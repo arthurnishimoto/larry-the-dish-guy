@@ -1,3 +1,5 @@
+
+
 class Player {
 
   private int id;
@@ -9,14 +11,17 @@ class Player {
   public int stateId;    // 0 is step1, 1 is step2, 3 is kick1, 4 is kick2
 
   private int numberOfDishes;
-
+  private Dish baseDish;
+  private ArrayList dishes;
+  int playerForce = 0;
+  
   // isRemote = true, then this instance is the client
   Player(String name, boolean isRemote) {
     // Default for now
     if ( isRemote )  x = 200;
     else            x = 400;
     y = 0;
-    numberOfDishes = 1;
+    numberOfDishes = 10;
     this.name = name;
     this.isRemote = isRemote;
     this.stateId = 0;
@@ -33,6 +38,16 @@ class Player {
       sprites[2] = loadImage("waiter_kick01.png");
       sprites[3] = loadImage("waiter_kick02.png");
     }
+    
+    baseDish = new Dish();
+    dishes = new ArrayList();
+    Dish lastDish = new Dish( baseDish, 0, 12, 5, 0 );
+    
+    for( int i = 0; i < numberOfDishes; i++ ){
+      Dish curDish = new Dish( lastDish, 0, 12, 5, numberOfDishes - i );
+      dishes.add(lastDish);
+      lastDish = curDish;
+    }
   }
 
   public void draw(int time) {
@@ -44,8 +59,11 @@ class Player {
       this.stateId = 1;
     }
 
+    
+    
     y = (int) map(time, 0, 30000, 0, height);
     noStroke();
+    imageMode(CORNER);
     if (this.stateId == 0) {
       image(sprites[0], x-sprites[0].width, y-sprites[0].height, sprites[0].width*2, sprites[0].height*2);
       this.stateId = 1;
@@ -62,14 +80,33 @@ class Player {
       image(sprites[2], x-sprites[2].width, y-sprites[2].height, sprites[2].width*2, sprites[2].height*2);
       this.stateId = 0;
     }
+    
+    if( name == "Player1" )
+      baseDish.xPos = x + sprites[0].width - 18;
+    else
+      baseDish.xPos = x - sprites[0].width + 18;
+    baseDish.yPos = y - sprites[0].height + 15;
+    baseDish.draw();
+    baseDish.playerForce += playerForce / 10000.0;
+    
+    for( int i = 0; i < dishes.size(); i++ ){
+      Dish d = (Dish)dishes.get(i);
+      d.draw();
+    }
   }
 
   void goLeft() {
+    playerForce--;
     x-=4;
   }
 
   void goRight() {
+    playerForce++;
     x+=4;
+  }
+  
+  void stopForce(){
+    playerForce = 0;
   }
 }
 

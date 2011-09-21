@@ -1,3 +1,5 @@
+int nDishes = 10;
+
 class DishTestScene extends Game{
   
   Dish baseDish;
@@ -6,10 +8,19 @@ class DishTestScene extends Game{
   
   int playerForce = 0;
   
+  ArrayList dishes;
+  
   DishTestScene(PApplet p){  
     baseDish = new Dish();
-    dish1 = new Dish( baseDish, 0, 12, 5 );
-    dish2 = new Dish( dish1, 0, 12, 5 );
+    dishes = new ArrayList();
+    
+    Dish lastDish = new Dish( baseDish, 0, 12, 5, 0 );
+    
+    for( int i = 0; i < nDishes; i++ ){
+      Dish curDish = new Dish( lastDish, 0, 12, 5, nDishes - i );
+      dishes.add(lastDish);
+      lastDish = curDish;
+    }
   }
 
   public void draw(){
@@ -18,8 +29,12 @@ class DishTestScene extends Game{
     baseDish.draw();
     baseDish.playerForce += playerForce / 10000.0;
     
-    dish1.draw();
-    dish2.draw();
+    for( int i = 0; i < dishes.size(); i++ ){
+      Dish d = (Dish)dishes.get(i);
+      d.draw();
+    }
+    //dish1.draw();
+    //dish2.draw();
     
     rectMode(CORNER);
     fill(255);
