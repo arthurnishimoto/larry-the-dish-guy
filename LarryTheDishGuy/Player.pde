@@ -13,7 +13,7 @@ class Player {
   // isRemote = true, then this instance is the client
   Player(String name, boolean isRemote) {
     // Default for now
-    if( isRemote )  x = 200;
+    if ( isRemote )  x = 200;
     else            x = 400;
     y = 0;
     numberOfDishes = 1;
@@ -21,20 +21,29 @@ class Player {
     this.isRemote = isRemote;
     this.stateId = 0;
     sprites = new PImage[4];
-    sprites[0] = loadImage("waiter_step01.png");
-    sprites[1] = loadImage("waiter_step02.png");
-    sprites[2] = loadImage("waiter_kick01.png");
-    sprites[3] = loadImage("waiter_kick02.png");
+    if ( isRemote) {
+      sprites[0] = loadImage("waiter02_step01.png");
+      sprites[1] = loadImage("waiter02_step02.png");
+      sprites[2] = loadImage("waiter02_kick01.png");
+      sprites[3] = loadImage("waiter02_kick02.png");
+    }
+    else {
+      sprites[0] = loadImage("waiter_step01.png");
+      sprites[1] = loadImage("waiter_step02.png");
+      sprites[2] = loadImage("waiter_kick01.png");
+      sprites[3] = loadImage("waiter_kick02.png");
+    }
   }
 
   public void draw(int time) {
     int frameTimer = frameCount % 30;
     if (frameTimer < 15 ) {
       this.stateId = 0;
-    } else if (frameTimer >=15) {
+    } 
+    else if (frameTimer >=15) {
       this.stateId = 1;
     }
-    
+
     y = (int) map(time, 0, 30000, 0, height);
     noStroke();
     if (this.stateId == 0) {

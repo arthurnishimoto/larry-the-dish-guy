@@ -44,9 +44,9 @@ void setup() {
 }
 
 void draw() {
-  background(128,96,64);
-  
-  switch( currentScene ){
+  background(128, 96, 64);
+
+  switch( currentScene ) {
     case(0):
       currentGame = theGame;
       break;
