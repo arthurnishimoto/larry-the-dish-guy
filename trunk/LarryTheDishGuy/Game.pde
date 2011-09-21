@@ -54,6 +54,7 @@ class Game {
     }
     else { // Game has started!
       theCounter.tick();
+      image(backgroundImage, 0, 0, width, height);
       
       // Draw the tables
       for( int i = 0; i < theTable.length; i++ ) {
