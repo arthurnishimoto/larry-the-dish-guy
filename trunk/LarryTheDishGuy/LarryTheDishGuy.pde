@@ -1,5 +1,6 @@
 import processing.net.*;
 
+Game currentGame;
 Game theGame;
 DishTestScene dishTest;
 
@@ -15,12 +16,19 @@ int clientPort = 23456;
 
 int currentScene = 0;
 
+// Key states
+final int PRESSED = 0;
+final int DRAGGED = 1;
+final int RELEASED = 2;
+
 void setup() {
   size(600, 400);
 
   theGame = new Game(this);
-  dishTest = new DishTestScene();
+  dishTest = new DishTestScene(this);
 
+  currentGame = theGame; // initial scene
+  
   // Network
   if ( isServer )
     s = new Server( this, serverPort );
@@ -40,20 +48,27 @@ void draw() {
   
   switch( currentScene ){
     case(0):
-      theGame.draw();
+      currentGame = theGame;
       break;
     case(1):
-      dishTest.draw();
+      currentGame = dishTest;
       break;
   }// switch
 
+  currentGame.draw();
   processNetwork();
 }
 
 void keyPressed() {
-  theGame.handleKeyEvent();
+  currentGame.handleKeyEvent();
+  
+  if( key == 'r' )
+    setup();
 }
 
+void keyReleased() {
+  currentGame.handleKeyEvent(RELEASED);
+}
 
 // Simple two-way communication between server and client
 void processNetwork() {
