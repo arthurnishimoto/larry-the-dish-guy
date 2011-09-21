@@ -10,6 +10,9 @@ class Game {
   private Dish testDish;
   private PApplet theApplet;
   
+  Game() {
+  }
+  
   Game(PApplet theApplet) {
     this.theApplet = theApplet;
     
@@ -74,6 +77,18 @@ class Game {
     else if( key == CODED && keyCode == RIGHT ) {
       if( isServer )  rightPlayer.goRight();
       else            leftPlayer.goRight();
+    }
+  }
+  
+  // Overidden
+  public void handleKeyEvent(int state) {
+    switch(state){
+      case(PRESSED):
+        break;
+      case(DRAGGED):
+        break;
+      case(RELEASED):
+        break;
     }
   }
 }
