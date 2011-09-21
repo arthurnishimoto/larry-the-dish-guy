@@ -21,6 +21,7 @@ final int PRESSED = 0;
 final int DRAGGED = 1;
 final int RELEASED = 2;
 
+PImage backgroundImage;
 void setup() {
   size(600, 400);
 
@@ -41,6 +42,7 @@ void setup() {
     println("Connected to server");
   }
   rectMode(CENTER);
+  backgroundImage = loadImage("background.png");
 }
 
 void draw() {
