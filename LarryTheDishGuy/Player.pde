@@ -8,13 +8,14 @@ class Player {
   public int y;            // Position in y
   private boolean isRemote; // whether this player is the remote player (client) or not
   private PImage[] sprites;
-  public int stateId;    // 0 is step1, 1 is step2, 3 is kick1, 4 is kick2
+  public int stateId;    // 0 is step1, 1 is step2, 2 is kick1, 3 is kick2
+  private float animationTimer; //used to time sprite changes
 
   private int numberOfDishes;
   private Dish baseDish;
   private ArrayList dishes;
   int playerForce = 0;
-  
+
   // isRemote = true, then this instance is the client
   Player(String name, boolean isRemote) {
     // Default for now
@@ -25,6 +26,7 @@ class Player {
     this.name = name;
     this.isRemote = isRemote;
     this.stateId = 0;
+    animationTimer = millis();
     sprites = new PImage[4];
     if ( isRemote) {
       sprites[0] = loadImage("waiter02_step01.png");
@@ -38,12 +40,12 @@ class Player {
       sprites[2] = loadImage("waiter_kick01.png");
       sprites[3] = loadImage("waiter_kick02.png");
     }
-    
+
     baseDish = new Dish();
     dishes = new ArrayList();
     Dish lastDish = new Dish( baseDish, 0, 12, 5, 0 );
-    
-    for( int i = 0; i < numberOfDishes; i++ ){
+
+    for ( int i = 0; i < numberOfDishes; i++ ) {
       Dish curDish = new Dish( lastDish, 0, 12, 5, numberOfDishes - i );
       dishes.add(lastDish);
       lastDish = curDish;
@@ -51,45 +53,49 @@ class Player {
   }
 
   public void draw(int time) {
-    int frameTimer = frameCount % 30;
-    if (frameTimer < 15 ) {
-      this.stateId = 0;
-    } 
-    else if (frameTimer >=15) {
+    float now = millis() - this.animationTimer;
+    if (this.stateId == 0 && now > 300 ) {
       this.stateId = 1;
+      animationTimer = millis();
+    } 
+    else if (this.stateId == 1 && now > 300) { 
+      this.stateId = 0;
+      animationTimer = millis();
+    } 
+    else if (this.stateId == 2 && now > 500) {
+      this.stateId = 0;
+      animationTimer = millis();
+    } 
+    else if (this.stateId == 3 && now > 300) {
+      this.stateId = 0;
+      animationTimer = millis();
     }
 
-    
-    
     y = (int) map(time, 0, 30000, 0, height);
     noStroke();
     imageMode(CORNER);
     if (this.stateId == 0) {
       image(sprites[0], x-sprites[0].width, y-sprites[0].height, sprites[0].width*2, sprites[0].height*2);
-      this.stateId = 1;
     } 
     else if (this.stateId == 1) {
       image(sprites[1], x-sprites[1].width, y-sprites[1].height, sprites[1].width*2, sprites[1].height*2);
-      this.stateId = 0;
     } 
     else if (this.stateId == 2) {
       image(sprites[2], x-sprites[2].width, y-sprites[2].height, sprites[2].width*2, sprites[2].height*2);
-      this.stateId = 3;
     }
     else if (this.stateId == 3) {
-      image(sprites[2], x-sprites[2].width, y-sprites[2].height, sprites[2].width*2, sprites[2].height*2);
-      this.stateId = 0;
+      image(sprites[3], x-sprites[3].width, y-sprites[3].height, sprites[3].width*2, sprites[3].height*2);
     }
-    
-    if( name == "Player1" )
+
+    if ( name == "Player1" )
       baseDish.xPos = x + sprites[0].width - 18;
     else
       baseDish.xPos = x - sprites[0].width + 18;
     baseDish.yPos = y - sprites[0].height + 15;
     baseDish.draw();
     baseDish.playerForce += playerForce / 10000.0;
-    
-    for( int i = 0; i < dishes.size(); i++ ){
+
+    for ( int i = 0; i < dishes.size(); i++ ) {
       Dish d = (Dish)dishes.get(i);
       d.draw();
     }
@@ -104,8 +110,8 @@ class Player {
     playerForce++;
     x+=4;
   }
-  
-  void stopForce(){
+
+  void stopForce() {
     playerForce = 0;
   }
 }
