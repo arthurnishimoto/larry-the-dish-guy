@@ -14,7 +14,8 @@ class Player {
   private int numberOfDishes;
   private Dish baseDish;
   private ArrayList dishes;
-  int playerForce = 0;
+  float playerForce = 0;
+  int forceIncrement = 5;
 
   // isRemote = true, then this instance is the client
   Player(String name, boolean isRemote) {
@@ -42,6 +43,7 @@ class Player {
     }
 
     baseDish = new Dish();
+    playerForce = random(-1,1);
     dishes = new ArrayList();
     Dish lastDish = new Dish( baseDish, 0, 12, 5, 0 );
 
@@ -71,7 +73,7 @@ class Player {
       animationTimer = millis();
     }
 
-    y = (int) map(time, 0, 30000, 0, height);
+    y = (int) map(time, 0, 30000, 0, height) + 100;
     noStroke();
     imageMode(CORNER);
     if (this.stateId == 0) {
@@ -91,23 +93,25 @@ class Player {
       baseDish.xPos = x + sprites[0].width - 18;
     else
       baseDish.xPos = x - sprites[0].width + 18;
-    baseDish.yPos = y - sprites[0].height + 15;
-    baseDish.draw();
-    baseDish.playerForce += playerForce / 10000.0;
+    baseDish.yPos = y - sprites[0].height + 20;
+    //baseDish.draw();
+    baseDish.process();
+    baseDish.playerForce += playerForce / 100000.0;
 
     for ( int i = 0; i < dishes.size(); i++ ) {
       Dish d = (Dish)dishes.get(i);
-      d.draw();
+      d.draw(); // Draw the dish
+      d.process(); // Process physics
     }
   }
 
   void goLeft() {
-    playerForce--;
+    playerForce += forceIncrement;
     x-=4;
   }
 
   void goRight() {
-    playerForce++;
+    playerForce -= forceIncrement;
     x+=4;
   }
 

@@ -30,6 +30,7 @@ class Dish{
   float slideY = 0;
   
   int nDishesAbove = 0;
+  float maxFallDistance = 0;
   
   PImage dishImage;
   Dish(){
@@ -49,12 +50,10 @@ class Dish{
     h = _h;
     nDishesAbove = _nDishesAbove;
     dishImage = loadImage("plate.png");
+    maxFallDistance = 40;
   }// CTOR
   
-  void draw(){
-    imageMode(CENTER);
-    rectMode(CENTER);
-    
+  void process(){
     if( parentDish != null && state == PLAY){
       if( currentTilt != 0 && dist( xPos, yPos, parentDish.xPos, parentDish.yPos ) > dishImage.width * 0.7 ){
         state = FALLING;
@@ -81,7 +80,24 @@ class Dish{
       
       xPos += slideX / 20;
       yPos += 0.98;
+      
     }
+
+    // Calculate tilt
+    currentTilt += playerForce;
+    
+    // Test interaction
+    //if( lastMouseX == 0 )
+   //   lastMouseX = mouseX;  
+   // float diff = mouseX - lastMouseX;
+   // playerForce += diff / 10000.0;
+   // lastMouseX = mouseX; 
+  }
+  
+  void draw(){
+    imageMode(CENTER);
+    rectMode(CENTER);
+    
     pushMatrix();
     translate( xPos, yPos );
     rotate( currentTilt );    
@@ -91,16 +107,6 @@ class Dish{
     //noStroke();
     //rect( 0, 0, w, h );
     popMatrix();
-    
-    // Calculate tilt
-    currentTilt += playerForce;
-    
-    // Test interaction
-    //if( lastMouseX == 0 )
-   //   lastMouseX = mouseX;  
-   // float diff = mouseX - lastMouseX;
-   // playerForce += diff / 10000.0;
-   // lastMouseX = mouseX;
   }// draw
 
 }// class

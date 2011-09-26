@@ -23,7 +23,6 @@ class Game {
     
 
     rightPlayer   = new Player("Player1", false);
-    rightPlayer.x = 400;
 
     leftPlayer    = new Player("Player2", true);
 
