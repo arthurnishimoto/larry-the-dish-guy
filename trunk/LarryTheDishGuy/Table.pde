@@ -21,8 +21,11 @@ class Table {
     image(this.sprite, x - sprite.width, y - sprite.height, sprite.width * 2, sprite.height * 2);
   }
   
-  public void checkCollision(Player aPlayer) {
-    if( aPlayer.x > x - tWidth / 2 && aPlayer.x < x + tWidth / 2 && aPlayer.y > y - tHeight / 2 && aPlayer.y < y + tHeight / 2 )
-    println("ON TABLE");
+  public boolean checkCollision(Player aPlayer) {
+    if( aPlayer.x > x - tWidth / 2 - 100 && aPlayer.x < x + tWidth / 2 + 100 && aPlayer.y > y - tHeight / 2 && aPlayer.y < y + tHeight / 2 ) {
+      return true;
+    }
+      
+    return false;
   }
 }

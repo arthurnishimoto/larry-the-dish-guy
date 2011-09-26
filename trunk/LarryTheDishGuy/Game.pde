@@ -6,12 +6,12 @@ class Game {
   private Counter  theCounter;
   private Table    []theTable;
   
-
   private Intro theIntro;
   
-
   private Dish testDish;
   private PApplet theApplet;
+  
+  private PImage lastFrame;
   
 
   Game() {
@@ -30,18 +30,18 @@ class Game {
     isServer      = true;
     
 
-    theTable      = new Table[6];
+    theTable      = new Table[8];
     theIntro      = new Intro(theApplet);
 
     // Left tables
-    for ( int i = 0; i < 3; i++ ) {
-      int yTable = (int) map(i, 0, 2, 50, height - 50);
+    for ( int i = 0; i < 4; i++ ) {
+      int yTable = (int) map(i, 0, 3, 50, height - 50);
       theTable[i] = new Table(70, yTable, 30, 30);
     }
 
     // Right tables
-    for ( int i = 3; i < 6; i++ ) {
-      int yTable = (int) map(i, 3, 5, 50, height - 50);
+    for ( int i = 4; i < 8; i++ ) {
+      int yTable = (int) map(i, 4, 7, 50, height - 50);
       theTable[i] = new Table(width - 70, yTable, 30, 30);
     }
   }
@@ -63,25 +63,53 @@ class Game {
       theIntro.draw();
     }
     else { // Game has started!
-      theCounter.tick();
-      imageMode(CORNER);
-      image(backgroundImage, 0, 0, width, height);
-
-      // Draw the tables
-      for ( int i = 0; i < theTable.length; i++ ) {
-        theTable[i].checkCollision(leftPlayer);
-        theTable[i].checkCollision(rightPlayer);
-        theTable[i].draw();
+      if ( !theCounter.gameTimePassed() ) {
+        theCounter.tick();
+        imageMode(CORNER);
+        image(backgroundImage, 0, 0, width, height);
+  
+        // Draw the tables
+        for ( int i = 0; i < theTable.length; i++ ) {
+          if( theTable[i].checkCollision(leftPlayer) ) {
+            leftPlayer.addDish();
+          }
+          
+          if( theTable[i].checkCollision(rightPlayer) ) {
+            rightPlayer.addDish();
+          }
+          theTable[i].draw();
+        }
+  
+        // Draw the players
+        rightPlayer.draw( theCounter.getTime() );
+        leftPlayer.draw( theCounter.getTime() );
+        lastFrame = get();
       }
-
-      // Draw the players
-      rightPlayer.draw( theCounter.getTime() );
-      leftPlayer.draw( theCounter.getTime() );
-
-      if ( theCounter.gameTimePassed() ) 
-        println ("GAME END");
+      else {
+        imageMode(CORNER);
+        image(lastFrame, 0, 0);
+        
+        if( isServer ) {
+          // Draw winner - loser
+          if( rightPlayer.winner == true && leftPlayer.winner == true ) { // Draw
+            textMode(CENTER);
+            text("DRAW", 320, 240);
+          }
+          else if( rightPlayer.winner == true ) {
+            textMode(CENTER);
+            text("WINNER", 320, 240);
+          }
+          else { 
+            textMode(CENTER);
+            text("LOSER", 320, 240);
+          }
+        }
+        else { // Send to client whether he won or not
+        }
+      }
     }
   }
+    
 
   public void handleKeyEvent() {
     if ( key == CODED && keyCode == LEFT ) {
