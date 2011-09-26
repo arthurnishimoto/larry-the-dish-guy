@@ -6,6 +6,7 @@ DishTestScene dishTest;
 
 Server s; // Transmits data to other app
 Client c; // Receives data from other app
+boolean isNetworkInit = false; //wheter the network has been initialized
 
 boolean isServer = false;       // Whether this instance is server.
 boolean clientConnected = false;
@@ -30,17 +31,7 @@ void setup() {
 
   currentGame = theGame; // initial scene
   
-  // Network
-  if ( isServer )
-    s = new Server( this, serverPort );
-  else
-    s = new Server( this, clientPort );
 
-  if ( !isServer ) {
-    println("Waiting for to connect to server");
-    c = new Client( this, serverIP, serverPort );
-    println("Connected to server");
-  }
   rectMode(CENTER);
   backgroundImage = loadImage("background.png");
 }
@@ -58,7 +49,9 @@ void draw() {
   }// switch
 
   currentGame.draw();
-  processNetwork();
+  
+  if( isNetworkInit)
+    processNetwork();
 }
 
 void keyPressed() {
@@ -110,4 +103,21 @@ void serverEvent( Server server, Client client ) {
  */
 void Start(int value) {
   theGame.start();
+}
+
+void initNetwork(String theIP) {
+  // Network
+  if ( isServer )
+    s = new Server( this, serverPort );
+  else
+    s = new Server( this, clientPort );
+    
+  if ( !isServer ) {
+    println("Waiting to connect to server");
+    c = new Client( this, theIP, serverPort );
+    println("Connected to server");
+    clientConnected = true;
+  }
+  
+  isNetworkInit = true;
 }
