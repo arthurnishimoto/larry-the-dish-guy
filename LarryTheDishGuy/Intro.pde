@@ -127,4 +127,8 @@ class Intro {
   public boolean isServer() {
     return serverT.getState();
   }
+  
+  public String getIP() {
+    return t.getText();
+  }
 }
