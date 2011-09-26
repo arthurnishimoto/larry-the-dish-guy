@@ -109,4 +109,8 @@ class Dish{
     popMatrix();
   }// draw
 
+  public int getState() {
+    return state;
+  } //getState
+  
 }// class

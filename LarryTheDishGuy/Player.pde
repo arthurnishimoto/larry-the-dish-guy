@@ -13,20 +13,27 @@ class Player {
 
   private int numberOfDishes;
   private Dish baseDish;
+  private Dish lastDish;
   private ArrayList dishes;
   float playerForce = 0;
   int forceIncrement = 5;
-
+  private int dt = 0;
+  private int prevMillis = 0;
+  
+  private int addDelay;
+  private boolean winner; 
+  
   // isRemote = true, then this instance is the client
   Player(String name, boolean isRemote) {
     // Default for now
     if ( isRemote )  x = 200;
     else            x = 400;
-    y = 0;
-    numberOfDishes = 10;
+    y = 50;
+    numberOfDishes = 4;
     this.name = name;
     this.isRemote = isRemote;
     this.stateId = 0;
+    addDelay = 0;
     animationTimer = millis();
     sprites = new PImage[4];
     if ( isRemote) {
@@ -45,7 +52,8 @@ class Player {
     baseDish = new Dish();
     playerForce = random(-1,1);
     dishes = new ArrayList();
-    Dish lastDish = new Dish( baseDish, 0, 12, 5, 0 );
+    lastDish = new Dish( baseDish, 0, 12, 5, 0 );
+    winner = true;
 
     for ( int i = 0; i < numberOfDishes; i++ ) {
       Dish curDish = new Dish( lastDish, 0, 12, 5, numberOfDishes - i );
@@ -73,7 +81,7 @@ class Player {
       animationTimer = millis();
     }
 
-    y = (int) map(time, 0, 30000, 0, height) + 100;
+    y = (int) map(time, 0, 30000, 60, height - 60);
     noStroke();
     imageMode(CORNER);
     if (this.stateId == 0) {
@@ -102,6 +110,7 @@ class Player {
       Dish d = (Dish)dishes.get(i);
       d.draw(); // Draw the dish
       d.process(); // Process physics
+      if( d.getState() == 1 ) winner = false;
     }
   }
 
@@ -117,6 +126,26 @@ class Player {
 
   void stopForce() {
     playerForce = 0;
+  }
+  
+  void addDish() {
+    if( addDelay == 0 ) {
+      numberOfDishes++;
+      Dish curDish = new Dish( lastDish, 0, 12, 5, numberOfDishes);
+      dishes.add(lastDish);
+      lastDish = curDish;
+      prevMillis = millis();
+      addDelay += 1;
+    }
+    else {
+      if( addDelay > 200 ) addDelay = 0;
+      else {
+        int curMillis = millis();
+        dt = curMillis - prevMillis;
+        addDelay += dt;
+        prevMillis = curMillis;
+      }
+    }
   }
 }
 
