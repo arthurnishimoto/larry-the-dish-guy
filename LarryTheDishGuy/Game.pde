@@ -1,20 +1,26 @@
 class Game {
+  
 
   private Player   rightPlayer;
   private Player   leftPlayer;
   private Counter  theCounter;
   private Table    []theTable;
+  
 
   private Intro theIntro;
+  
 
   private Dish testDish;
   private PApplet theApplet;
+  
 
   Game() {
   }
+  
 
   Game(PApplet theApplet) {
     this.theApplet = theApplet;
+    
 
     rightPlayer   = new Player("Player1", false);
     rightPlayer.x = 400;
@@ -23,6 +29,7 @@ class Game {
 
     theCounter    = new Counter();
     isServer      = true;
+    
 
     theTable      = new Table[6];
     theIntro      = new Intro(theApplet);
@@ -44,6 +51,7 @@ class Game {
    * Start the game!
    */
   public void start() {
+    theIntro.isServer();
     theIntro.hide();
     theCounter.startCounting();
 
