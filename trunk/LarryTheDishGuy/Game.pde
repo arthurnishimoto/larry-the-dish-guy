@@ -56,7 +56,6 @@ class Game {
     theIntro.isServer();
 //    theIntro.isServer();
     theIntro.hide();
-    theCounter.startCounting();
 
     // Free up intro memory ??
   }
@@ -70,6 +69,7 @@ class Game {
       if( !hasPlayStarted ) {
         startOfGame();
         hasPlayStarted = true;
+        theCounter.startCounting();
       }
       if( clientConnected) {
         if ( !theCounter.gameTimePassed() ) {
@@ -160,10 +160,10 @@ class Game {
         leftPlayer.stateId = 3;
         if ( leftPlayer.x + 35 > rightPlayer.x && leftPlayer.x + 35 < rightPlayer.x + 20 ) {
           rightPlayer.stateId = 2;
-          leftPlayer.goRight();
-          rightPlayer.goLeft();
-          rightPlayer.goLeft();
-          rightPlayer.goLeft();
+          leftPlayer.goLeft();
+          rightPlayer.goRight();
+          rightPlayer.goRight();
+          rightPlayer.goRight();
         }
       }
     }
