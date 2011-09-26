@@ -23,6 +23,7 @@ class Game {
     
 
     rightPlayer   = new Player("Player1", false);
+    rightPlayer.x = 400;
 
     leftPlayer    = new Player("Player2", true);
 
@@ -92,15 +93,15 @@ class Game {
         if( isServer ) {
           // Draw winner - loser
           if( rightPlayer.winner == true && leftPlayer.winner == true ) { // Draw
-            textMode(CENTER);
+            textAlign(CENTER,CENTER);
             text("DRAW", 320, 240);
           }
           else if( rightPlayer.winner == true ) {
-            textMode(CENTER);
+            textAlign(CENTER,CENTER);
             text("WINNER", 320, 240);
           }
           else { 
-            textMode(CENTER);
+            textAlign(CENTER,CENTER);
             text("LOSER", 320, 240);
           }
         }
@@ -118,14 +119,12 @@ class Game {
           rightPlayer.goLeft();
       }
       else {
-        if ( leftPlayer.x > 150 )
-          leftPlayer.goLeft();
+        leftPlayer.goLeft();
       }
     }
     else if ( key == CODED && keyCode == RIGHT ) {
       if ( isServer ) {
-        if ( rightPlayer.x < 450 ) 
-          rightPlayer.goRight();
+        rightPlayer.goRight();
       }
       else {
         if ( rightPlayer.x - 35 > leftPlayer.x )

@@ -15,8 +15,7 @@ class Player {
   private Dish baseDish;
   private Dish lastDish;
   private ArrayList dishes;
-  float playerForce = 0;
-  int forceIncrement = 5;
+  int playerForce = 0;
   private int dt = 0;
   private int prevMillis = 0;
   
@@ -50,7 +49,6 @@ class Player {
     }
 
     baseDish = new Dish();
-    playerForce = random(-1,1);
     dishes = new ArrayList();
     lastDish = new Dish( baseDish, 0, 12, 5, 0 );
     winner = true;
@@ -101,27 +99,29 @@ class Player {
       baseDish.xPos = x + sprites[0].width - 18;
     else
       baseDish.xPos = x - sprites[0].width + 18;
-    baseDish.yPos = y - sprites[0].height + 20;
-    //baseDish.draw();
-    baseDish.process();
-    baseDish.playerForce += playerForce / 100000.0;
+    baseDish.yPos = y - sprites[0].height + 15;
+    baseDish.draw();
+    baseDish.playerForce += playerForce / 10000.0;
 
     for ( int i = 0; i < dishes.size(); i++ ) {
       Dish d = (Dish)dishes.get(i);
-      d.draw(); // Draw the dish
-      d.process(); // Process physics
+      d.draw();
       if( d.getState() == 1 ) winner = false;
     }
   }
 
   void goLeft() {
-    playerForce += forceIncrement;
-    x-=4;
+    if( x > 150 ) {
+      playerForce--;
+      x-=4;
+    }
   }
 
   void goRight() {
-    playerForce -= forceIncrement;
-    x+=4;
+    if ( x < 450 ) { 
+      playerForce++;
+      x+=4;
+    }
   }
 
   void stopForce() {
