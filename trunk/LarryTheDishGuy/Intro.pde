@@ -1,9 +1,10 @@
 import controlP5.*;
 
-PFont font;
+
 class Intro {
   
   private PApplet theApplet;
+  private PFont font;
   
   
   public boolean enabled;
@@ -40,7 +41,8 @@ class Intro {
     serverT.setState(true);
     
     this.enabled = true;
-    font = createFont("Cambria", 32);
+//    font = createFont("Cambria", 32);
+    font = loadFont("RopeMF-48.vlw");
     textFont( font );
     
     loadSprites();
@@ -57,8 +59,11 @@ class Intro {
     // Check for toggled modes
     checkModesToggled();
     
-    fill(255);
-    text("Larry and Billy the dish guys", 105, 50);
+//    fill(255);
+//    text("Larry and Billy the dish guys", 105, 50);
+    fill( 236, 220, 19);
+    textAlign(CENTER,CENTER);
+    text("Larry and Billy the dish guys", width/2, 50);
     
     // Animate
     animate();
@@ -117,5 +122,9 @@ class Intro {
    
     if( clientT.getState() == false && serverT.getState() == false ) b.hide();
     else                                                             b.show(); 
+  }
+  
+  public boolean isServer() {
+    return serverT.getState();
   }
 }
