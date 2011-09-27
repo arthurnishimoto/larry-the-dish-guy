@@ -15,7 +15,8 @@ class Player {
   private Dish baseDish;
   private Dish lastDish;
   private ArrayList dishes;
-  int playerForce = 0;
+  float playerForce = 0;
+  int forceIncrement = 5;
   private int dt = 0;
   private int prevMillis = 0;
   
@@ -32,7 +33,6 @@ class Player {
     this.name = name;
     this.isRemote = isRemote;
     this.stateId = 0;
-    addDelay = 0;
     animationTimer = millis();
     sprites = new PImage[4];
     if ( isRemote) {
@@ -49,6 +49,7 @@ class Player {
     }
 
     baseDish = new Dish();
+    playerForce = random(-1,1);
     dishes = new ArrayList();
     lastDish = new Dish( baseDish, 0, 12, 5, 0 );
     winner = true;
@@ -99,27 +100,29 @@ class Player {
       baseDish.xPos = x + sprites[0].width - 18;
     else
       baseDish.xPos = x - sprites[0].width + 18;
-    baseDish.yPos = y - sprites[0].height + 15;
-    baseDish.draw();
-    baseDish.playerForce += playerForce / 10000.0;
+    baseDish.yPos = y - sprites[0].height + 20;
+    //baseDish.draw();
+    baseDish.process();
+    baseDish.playerForce += playerForce / 100000.0;
 
     for ( int i = 0; i < dishes.size(); i++ ) {
       Dish d = (Dish)dishes.get(i);
       d.draw();
+      d.process();
       if( d.getState() == 1 ) winner = false;
     }
   }
 
   void goLeft() {
     if( x > 150 ) {
-      playerForce--;
+      playerForce += forceIncrement;
       x-=4;
     }
   }
 
   void goRight() {
     if ( x < 450 ) { 
-      playerForce++;
+      playerForce -= forceIncrement;
       x+=4;
     }
   }
