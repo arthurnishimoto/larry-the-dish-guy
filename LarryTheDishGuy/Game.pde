@@ -71,7 +71,7 @@ class Game {
         hasPlayStarted = true;
         theCounter.startCounting();
       }
-      if( clientConnected) {
+      if( clientConnected || singlePlayerTest ) {
         if ( !theCounter.gameTimePassed() ) {
           theCounter.tick();
           imageMode(CORNER);

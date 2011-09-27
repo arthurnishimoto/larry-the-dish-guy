@@ -11,6 +11,8 @@ boolean isNetworkInit = false; //wheter the network has been initialized
 boolean isServer = false;       // Whether this instance is server.
 boolean clientConnected = false;
 
+boolean singlePlayerTest = false; // Don't wait on client for testing purposes
+
 int serverPort = 12345;
 String serverIP = "10.28.206.117";
 int clientPort = 23456;
