@@ -133,6 +133,7 @@ class Game {
       }
       else {
         leftPlayer.goLeft();
+        networkMessageC += "L,";
       }
     }
     else if ( key == CODED && keyCode == RIGHT ) {
@@ -140,6 +141,7 @@ class Game {
         rightPlayer.goRight();
       }
       else {
+        networkMessageC += "R,";
         if ( rightPlayer.x - 35 > leftPlayer.x )
           leftPlayer.goRight();
       }
@@ -158,6 +160,7 @@ class Game {
       } 
       else {  //player is not the server
         leftPlayer.stateId = 3;
+        networkMessageC += "K,";
         if ( leftPlayer.x + 35 > rightPlayer.x && leftPlayer.x + 35 < rightPlayer.x + 20 ) {
           rightPlayer.stateId = 2;
           leftPlayer.goLeft();
@@ -165,6 +168,30 @@ class Game {
           rightPlayer.goRight();
           rightPlayer.goRight();
         }
+      }
+    }
+  }
+  
+  // this handles the key presses from client
+  public void handleClientKeys( String action) {
+    if ( action.equals("L") ) {
+      leftPlayer.goLeft();
+    }
+    
+    if ( action.equals("R")) {
+      if ( rightPlayer.x - 35 > leftPlayer.x ) {
+        leftPlayer.goRight();
+      }
+    }
+    
+    if ( action.equals("K")) {
+      leftPlayer.stateId = 3;
+      if ( leftPlayer.x + 35 > rightPlayer.x && leftPlayer.x + 35 < rightPlayer.x + 20 ) {
+        rightPlayer.stateId = 2;
+        leftPlayer.goLeft();
+        rightPlayer.goRight();
+        rightPlayer.goRight();
+        rightPlayer.goRight();
       }
     }
   }

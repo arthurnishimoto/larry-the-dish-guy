@@ -11,7 +11,12 @@ boolean isNetworkInit = false; //wheter the network has been initialized
 boolean isServer = false;       // Whether this instance is server.
 boolean clientConnected = false;
 
+
+
 boolean singlePlayerTest = false; // Don't wait on client for testing purposes
+
+String networkMessageC;
+String[] keysFromClient;
 
 int serverPort = 12345;
 String serverIP = "10.28.206.117";
@@ -36,6 +41,7 @@ void setup() {
 
   rectMode(CENTER);
   backgroundImage = loadImage("background.png");
+  networkMessageC = "";
 }
 
 void draw() {
@@ -74,13 +80,18 @@ void processNetwork() {
     if ( clientConnected ) { 
       if (c.available() > 0) { // Read message from client
         String dataString = c.readString();
-        String[] params = dataString.split(",|:");
+        keysFromClient = dataString.split(",|:");
+        for ( int i = 1; i < keysFromClient.length; i++) {
+          theGame.handleClientKeys(keysFromClient[i]);
+        }  
         println("Client sent: "+dataString);
       }
     }
   }
   else {
-    s.write("Client:5,6,7,8 "); // Send message to server
+//    s.write("Client:5,6,7,8 "); // Send message to server
+      s.write("Client:" + networkMessageC);
+      networkMessageC = "";
     if (c.available() > 0) { 
       String dataString = c.readString(); // Receive message from client
       String[] params = dataString.split(",|:");
