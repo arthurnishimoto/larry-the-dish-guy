@@ -102,13 +102,17 @@ class Player {
       baseDish.xPos = x - sprites[0].width + 18;
     baseDish.yPos = y - sprites[0].height + 20;
     //baseDish.draw();
-    baseDish.process();
+    if( isServer) {
+      baseDish.process();
+    }
     baseDish.playerForce += playerForce / 100000.0;
 
     for ( int i = 0; i < dishes.size(); i++ ) {
       Dish d = (Dish)dishes.get(i);
       d.draw();
-      d.process();
+      if( isServer) {
+        d.process();
+      }
       if( d.getState() == 1 ) winner = false;
     }
   }
@@ -150,6 +154,109 @@ class Player {
         dt = curMillis - prevMillis;
         addDelay += dt;
         prevMillis = curMillis;
+      }
+    }
+  }
+  
+  public String dishesToString() {
+    String plateInfo = "";
+    for( int i = 0; i < dishes.size(); i ++) {
+      plateInfo += ("p," + ((Dish)(dishes.get(i))).getX() + "," + ((Dish)(dishes.get(i))).getY() + "," + ((Dish)(dishes.get(i))).getTilt() + ",");
+    }
+    return plateInfo;
+  }
+  
+  public void updateDishes( String[] serverData) {
+    //do some stuff here
+    int numberOfDishesUpdated = 0;
+    boolean handlingLeftPlates = true;
+    boolean handlingRightPlates = true;
+//    println("number of dishes in arraylist = " + dishes.size());
+    if( isRemote) {
+      if( serverData[0].equals("Server")){
+        for( int i = 0; i < serverData.length; i++) {
+          if( serverData[i].equals("l")) {
+            while(handlingLeftPlates && (i < serverData.length)) {
+//              println(serverData[i]);
+              if( serverData[i].equals("p")) {
+                i++;
+                if( dishes.size() == numberOfDishesUpdated) {
+                  if( (i+2) < serverData.length){//check to make sure data wasn't dropped
+                    Dish curDish = new Dish( lastDish, 0, 12, 5, dishes.size());
+                    try {
+                      curDish.updatePlate( Float.parseFloat(serverData[i]), Float.parseFloat(serverData[i+1]), Float.parseFloat(serverData[i+2]));
+                      i+=2;
+                    }catch (NumberFormatException e) {
+                      System.err.println("NumberFormatException: " + e.getMessage());
+                    }
+                    dishes.add(lastDish);
+                    lastDish = curDish;
+                    numberOfDishesUpdated++;
+                  }
+                }else {
+//                  println("dishes.size() = " + dishes.size() + "\nnumberOfDishesUpdated = " + numberOfDishesUpdated);
+                  if( (i+2) < serverData.length){//check to make sure data wasn't dropped
+                    try {
+                      ((Dish)(dishes.get(numberOfDishesUpdated))).updatePlate( Float.parseFloat(serverData[i]), Float.parseFloat(serverData[i+1]), Float.parseFloat(serverData[i+2]));
+                      i+=2;
+                      numberOfDishesUpdated++;
+                    }catch (NumberFormatException e) {
+                      System.err.println("NumberFormatException: " + e.getMessage());
+                    }
+                  }
+                }
+              }else if(serverData[i].equals("r")){
+                handlingLeftPlates = false;
+              }
+              i++;
+            }
+          }
+          if(!handlingLeftPlates) {
+            break;
+          }
+        }
+      }
+    }else {
+      if( serverData.length > 0){
+        for( int i = 0; i < serverData.length; i++) {
+          if( serverData[i].equals("r")) {
+            while(handlingRightPlates && (i < serverData.length)) {
+//              println(serverData[i]);
+              if( serverData[i].equals("p")) {
+                i++;
+                if( dishes.size() == numberOfDishesUpdated) {
+                  if( (i+2) < serverData.length){//check to make sure data wasn't dropped
+                    Dish curDish = new Dish( lastDish, 0, 12, 5, dishes.size());
+                    try {
+                      curDish.updatePlate( Float.parseFloat(serverData[i]), Float.parseFloat(serverData[i+1]), Float.parseFloat(serverData[i+2]));
+                      i+=2;
+                    }catch (NumberFormatException e) {
+                      System.err.println("NumberFormatException: " + e.getMessage());
+                    }
+                    dishes.add(lastDish);
+                    lastDish = curDish;
+                    numberOfDishesUpdated++;
+                  }
+                }else {
+//                  println("dishes.size() = " + dishes.size() + "\nnumberOfDishesUpdated = " + numberOfDishesUpdated);
+                  if( (i+2) < serverData.length){//check to make sure data wasn't dropped
+                    try {
+                      ((Dish)(dishes.get(numberOfDishesUpdated))).updatePlate( Float.parseFloat(serverData[i]), Float.parseFloat(serverData[i+1]), Float.parseFloat(serverData[i+2]));
+                      i+=2;
+                      numberOfDishesUpdated++;
+                    }catch( NumberFormatException e) {
+                      System.err.println("NumberFormatException: " + e.getMessage());
+                    }
+                  }
+                }
+              }
+              i++;
+            }
+          }
+          if(!handlingLeftPlates) {
+            break;
+          }
+        }
       }
     }
   }

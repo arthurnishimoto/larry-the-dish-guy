@@ -197,18 +197,18 @@ class Game {
       }
       else {
         leftPlayer.goLeft();
-        networkMessageC += "L,";
       }
+      networkMessageC += "L,";
     }
     else if ( key == CODED && keyCode == RIGHT ) {
       if ( isServer ) {
         rightPlayer.goRight();
       }
       else {
-        networkMessageC += "R,";
         if ( rightPlayer.x - 35 > leftPlayer.x )
           leftPlayer.goRight();
       }
+      networkMessageC += "R,";
     }
 
     if ( key == ' ' ) {
@@ -226,7 +226,6 @@ class Game {
       } 
       else {  //player is not the server
         leftPlayer.stateId = 3;
-        networkMessageC += "K,";
         if ( leftPlayer.x + 35 > rightPlayer.x && leftPlayer.x + 35 < rightPlayer.x + 20 ) {
           sounds[2].trigger();
           rightPlayer.stateId = 2;
@@ -236,6 +235,7 @@ class Game {
           rightPlayer.goRight();
         }
       }
+      networkMessageC += "K,";
     }
   }
 
@@ -253,23 +253,41 @@ class Game {
     }
     
     if ( action.equals("L") ) {
-      leftPlayer.goLeft();
+      if( isServer){
+        leftPlayer.goLeft();
+      }else {
+        if ( leftPlayer.x + 35 < rightPlayer.x ) 
+          rightPlayer.goLeft();
+      }
     }
 
     if ( action.equals("R")) {
-      if ( rightPlayer.x - 35 > leftPlayer.x ) {
+      if ( (rightPlayer.x - 35 > leftPlayer.x) && isServer ) {
         leftPlayer.goRight();
+      }else if(!isServer) {
+        rightPlayer.goRight();
       }
     }
 
     if ( action.equals("K")) {
-      leftPlayer.stateId = 3;
-      if ( leftPlayer.x + 35 > rightPlayer.x && leftPlayer.x + 35 < rightPlayer.x + 20 ) {
-        rightPlayer.stateId = 2;
-        leftPlayer.goLeft();
-        rightPlayer.goRight();
-        rightPlayer.goRight();
-        rightPlayer.goRight();
+      if( isServer) {
+        leftPlayer.stateId = 3;
+        if ( leftPlayer.x + 35 > rightPlayer.x && leftPlayer.x + 35 < rightPlayer.x + 20 ) {
+          rightPlayer.stateId = 2;
+          leftPlayer.goLeft();
+          rightPlayer.goRight();
+          rightPlayer.goRight();
+          rightPlayer.goRight();
+        }
+      }else {
+        rightPlayer.stateId = 3;
+        if ( leftPlayer.x + 35 > rightPlayer.x && leftPlayer.x + 35 < rightPlayer.x + 20 ) {
+          leftPlayer.stateId = 2;
+          rightPlayer.goRight();
+          leftPlayer.goLeft();
+          leftPlayer.goLeft();
+          leftPlayer.goLeft();
+        }
       }
     }
   }
@@ -297,6 +315,14 @@ class Game {
   private void startOfGame() {
     isServer      = theIntro.isServer();
     initNetwork(theIntro.getIP());
+  }
+  
+  public Player getRightPlayer() {
+    return rightPlayer;
+  }
+  
+  public Player getLeftPlayer() {
+    return leftPlayer;
   }
 }
 
