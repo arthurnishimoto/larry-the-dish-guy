@@ -1,8 +1,10 @@
 import processing.net.*;
+import ddf.minim.*;
 
 Game currentGame;
 Game theGame;
 DishTestScene dishTest;
+
 
 Server s; // Transmits data to other app
 Client c; // Receives data from other app
@@ -13,7 +15,7 @@ boolean clientConnected = false;
 
 
 
-boolean singlePlayerTest = false; // Don't wait on client for testing purposes
+boolean singlePlayerTest = true; // Don't wait on client for testing purposes
 
 String networkMessageC;
 String[] keysFromClient;
@@ -149,4 +151,9 @@ void initNetwork(String theIP) {
   }
   
   isNetworkInit = true;
+}
+
+void stop() {
+  theGame.minim.stop();
+  super.stop();
 }
