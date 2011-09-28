@@ -18,6 +18,9 @@ class Game {
   private Button rematchButton;
   private Button quitButton;
   
+  private boolean serverWin = false;
+  private boolean clientWin = false;
+  
   Game() {
   }
   
@@ -144,15 +147,15 @@ class Game {
             }
           }
           else { // Send to client whether he won or not
-            if( rightPlayer.winner == true && leftPlayer.winner == true ) { // Draw
+            if( clientWin == true && serverWin == true ) { // Draw
               textAlign(CENTER,CENTER);
               text("DRAW", 320, 240);
             }
-            else if( leftPlayer.winner == true ) {
+            else if( clientWin == false ) {
               textAlign(CENTER,CENTER);
               text("WINNER", 320, 240);
             }
-            else { 
+            else{ 
               textAlign(CENTER,CENTER);
               text("LOSER", 320, 240);
             }
@@ -216,6 +219,17 @@ class Game {
   
   // this handles the key presses from client
   public void handleClientKeys( String action) {
+    if ( action.equals("OD") ) {
+      serverWin = true;
+      clientWin = true;
+    }
+    if ( action.equals("OW") ) {
+      serverWin = true;
+    }
+    if ( action.equals("OL") ) {
+      clientWin = false;
+    }
+    
     if ( action.equals("L") ) {
       leftPlayer.goLeft();
     }
