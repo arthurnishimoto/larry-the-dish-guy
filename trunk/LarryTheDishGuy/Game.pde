@@ -14,15 +14,22 @@ class Game {
   
   private PImage lastFrame;
   
-
+  private ControlP5 controlP5;
+  private Button rematchButton;
+  private Button quitButton;
+  
   Game() {
   }
   
-
   Game(PApplet theApplet) {
     this.theApplet = theApplet;
+    this.controlP5 = new ControlP5(theApplet);
     
-
+    rematchButton = controlP5.addButton("Restart", 0, 300 - 150, 300, 100, 50);
+    quitButton = controlP5.addButton("Quit", 0, 300 + 50, 300, 100, 50);
+    rematchButton.hide();
+    quitButton.hide();
+    
     rightPlayer   = new Player("Player1", false);
     rightPlayer.x = 400;
 
@@ -97,14 +104,45 @@ class Game {
         else {
           imageMode(CORNER);
           image(lastFrame, 0, 0);
+          rematchButton.show();
+          quitButton.show();
           
+          if( rematchButton.booleanValue() ){
+            rematchButton.hide();
+            quitButton.hide();
+            reset();
+          }
+          if( quitButton.booleanValue() ){
+            rematchButton.hide();
+            quitButton.hide();
+            exit();
+          }
+          
+          fill( 236, 220, 19);
           if( isServer ) {
             // Draw winner - loser
             if( rightPlayer.winner == true && leftPlayer.winner == true ) { // Draw
               textAlign(CENTER,CENTER);
               text("DRAW", 320, 240);
+              networkMessageC += "OD,";
             }
             else if( rightPlayer.winner == true ) {
+              textAlign(CENTER,CENTER);
+              text("WINNER", 320, 240);
+              networkMessageC += "OW,";
+            }
+            else { 
+              textAlign(CENTER,CENTER);
+              text("LOSER", 320, 240);
+              networkMessageC += "OL,";
+            }
+          }
+          else { // Send to client whether he won or not
+            if( rightPlayer.winner == true && leftPlayer.winner == true ) { // Draw
+              textAlign(CENTER,CENTER);
+              text("DRAW", 320, 240);
+            }
+            else if( leftPlayer.winner == true ) {
               textAlign(CENTER,CENTER);
               text("WINNER", 320, 240);
             }
@@ -112,8 +150,6 @@ class Game {
               textAlign(CENTER,CENTER);
               text("LOSER", 320, 240);
             }
-          }
-          else { // Send to client whether he won or not
           }
         }
       }else {

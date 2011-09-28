@@ -33,6 +33,10 @@ PImage backgroundImage;
 void setup() {
   size(600, 400);
 
+  isServer = false;
+  clientConnected = false;
+  isNetworkInit = false;
+  
   theGame = new Game(this);
   dishTest = new DishTestScene(this);
 
@@ -65,8 +69,18 @@ void draw() {
 void keyPressed() {
   currentGame.handleKeyEvent();
   
-  if( key == 'r' )
-    setup();
+  if( key == 'r' ){
+    reset();
+  }
+}
+
+void reset(){
+  // Close the existing network components and run setup again
+  if( c != null )
+    c.stop();
+  if( s != null )
+    s.stop();
+  setup();
 }
 
 void keyReleased() {
@@ -76,7 +90,7 @@ void keyReleased() {
 // Simple two-way communication between server and client
 void processNetwork() {
   if ( isServer ) {
-    s.write("Server:1,2,3,4 "); // Send message to client
+    //s.write("Server:1,2,3,4 "); // Send message to client
     if ( clientConnected ) { 
       if (c.available() > 0) { // Read message from client
         String dataString = c.readString();
@@ -90,13 +104,15 @@ void processNetwork() {
   }
   else {
 //    s.write("Client:5,6,7,8 "); // Send message to server
-      s.write("Client:" + networkMessageC);
-      networkMessageC = "";
-    if (c.available() > 0) { 
-      String dataString = c.readString(); // Receive message from client
-      String[] params = dataString.split(",|:");
-      println("Server sent: "+dataString);
-    }
+      if( !networkMessageC.equals("") ){ // Don't constantly send blank data
+        s.write("Client:" + networkMessageC);
+        networkMessageC = "";
+      }
+      if (c.available() > 0) { 
+        String dataString = c.readString(); // Receive message from client
+        String[] params = dataString.split(",|:");
+        println("Server sent: "+dataString);
+      }
   }
 }
 
