@@ -140,6 +140,7 @@ class Player {
       return;
       
     if( addDelay == 0 ) {
+      sounds[8].trigger();
       numberOfDishes++;
       Dish curDish = new Dish( lastDish, 0, 12, 5, numberOfDishes);
       dishes.add(lastDish);

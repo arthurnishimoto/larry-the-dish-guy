@@ -1,5 +1,6 @@
-class Game {
+public AudioSample[] sounds;
 
+class Game {
 
   private Player   rightPlayer;
   private Player   leftPlayer;
@@ -13,7 +14,7 @@ class Game {
   private PApplet theApplet;
 
   private PImage lastFrame;
-  public AudioSample[] sounds;
+
   public Minim minim;
   private ControlP5 controlP5;
   private Button rematchButton;
@@ -21,6 +22,7 @@ class Game {
   
   private boolean serverWin = false;
   private boolean clientWin = false;
+  private boolean gameOverSound = false;
   
   Game() {
   } 
@@ -60,7 +62,7 @@ class Game {
 
     //Setup sound
     String[] soundList = {    
-      "select.wav", "kick.wav", "kickhit.wav", "tick.wav", "tock.wav", "lose.wav", "win.wav"
+      "select.wav", "kick.wav", "kickhit.wav", "tick.wav", "tock.wav", "lose.wav", "win.wav", "dishhit.wav", "platepickup.wav"
     };
     minim = new Minim(this.theApplet);
     sounds = new AudioSample[soundList.length];
@@ -99,14 +101,29 @@ class Game {
           theCounter.startCounting();
           
         if ( !theCounter.gameTimePassed() ) {
-//          if (theCounter.getTime() % 2000 < 50) {
-//            sounds[4].trigger(); //tock
-//          } 
-//          else if ( theCounter.getTime() % 1000 < 50 ) {
-//            sounds[3].trigger(); //tick
-//          }
-
-
+          if( theCounter.getTime() < 20000 ){
+            if (theCounter.getTime() % 2000 < 50) {
+              sounds[4].trigger(); //tock
+            } 
+            else if ( theCounter.getTime() % 1000 < 50 ) {
+              sounds[3].trigger(); //tick
+            }
+          } else if( theCounter.getTime() < 25000 ) {
+            if (theCounter.getTime() % 1000 < 50) {
+              sounds[4].trigger(); //tock
+            } 
+            else if ( theCounter.getTime() % 500 < 50 ) {
+              sounds[3].trigger(); //tick
+            }
+          } else if( theCounter.getTime() < 30000 ) {
+            if (theCounter.getTime() % 500 < 50) {
+              sounds[4].trigger(); //tock
+            } 
+            else if ( theCounter.getTime() % 250 < 50 ) {
+              sounds[3].trigger(); //tick
+            }
+          }
+ 
           theCounter.tick();
           imageMode(CORNER);
           image(backgroundImage, 0, 0, width, height);
@@ -157,11 +174,19 @@ class Game {
               textAlign(CENTER, CENTER);
               text("WINNER", 320, 240);
               networkMessageC += "OW,";
+              if( !gameOverSound ){
+                sounds[6].trigger();
+                gameOverSound = true;
+              }
             }
             else { 
               textAlign(CENTER, CENTER);
               text("LOSER", 320, 240);
               networkMessageC += "OL,";
+              if( !gameOverSound ){
+                sounds[5].trigger();
+                gameOverSound = true;
+              }
             }
           }
           else { // Send to client whether he won or not

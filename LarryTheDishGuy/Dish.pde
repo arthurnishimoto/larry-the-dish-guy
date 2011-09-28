@@ -84,6 +84,7 @@ class Dish{
       
       if( maxFallDistance < 0 || parentDish.state == CRASHED ){
         state = CRASHED;
+        sounds[7].trigger();
       }
     }
 
