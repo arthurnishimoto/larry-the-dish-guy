@@ -76,9 +76,15 @@ class Game {
       if( !hasPlayStarted ) {
         startOfGame();
         hasPlayStarted = true;
-        theCounter.startCounting();
+          //theCounter.startCounting();
       }
       if( clientConnected || singlePlayerTest ) {
+        
+        // Don't start the counter until the client is connected
+        // Prevents server 'head start'
+        if( !theCounter.counting )
+          theCounter.startCounting();
+          
         if ( !theCounter.gameTimePassed() ) {
           theCounter.tick();
           imageMode(CORNER);
