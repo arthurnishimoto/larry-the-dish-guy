@@ -49,7 +49,7 @@ class Player {
     }
 
     baseDish = new Dish();
-    playerForce = random(-1,1);
+    //playerForce = random(-1,1);
     dishes = new ArrayList();
     lastDish = new Dish( baseDish, 0, 12, 5, 0 );
     winner = true;
