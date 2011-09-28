@@ -3,7 +3,7 @@ class Dish{
   // States
   final static int PLAY = 0; // In play
   final static int FALLING = 1;
-  final static int COLLIDED = 2; // Collided with floor
+  final static int CRASHED = 2; // Collided with floor
   int state = PLAY;
   
   float xPos;
@@ -50,7 +50,7 @@ class Dish{
     h = _h;
     nDishesAbove = _nDishesAbove;
     dishImage = loadImage("plate.png");
-    maxFallDistance = 40;
+    maxFallDistance = 100;
   }// CTOR
   
   void process(){
@@ -80,7 +80,11 @@ class Dish{
       
       xPos += slideX / 20;
       yPos += 0.98;
+      maxFallDistance--;
       
+      if( maxFallDistance < 0 || parentDish.state == CRASHED ){
+        state = CRASHED;
+      }
     }
 
     // Calculate tilt
@@ -95,6 +99,9 @@ class Dish{
   }
   
   void draw(){
+    if( state == CRASHED )
+      return;
+     
     imageMode(CENTER);
     rectMode(CENTER);
     
