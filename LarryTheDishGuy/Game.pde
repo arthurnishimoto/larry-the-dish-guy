@@ -1,19 +1,20 @@
 class Game {
-  
+
 
   private Player   rightPlayer;
   private Player   leftPlayer;
   private Counter  theCounter;
   private Table    []theTable;
   private boolean  hasPlayStarted;
-  
+
   private Intro theIntro;
-  
+
   private Dish testDish;
   private PApplet theApplet;
-  
+
   private PImage lastFrame;
-  
+  public AudioSample[] sounds;
+  public Minim minim;
   private ControlP5 controlP5;
   private Button rematchButton;
   private Button quitButton;
@@ -22,9 +23,8 @@ class Game {
   private boolean clientWin = false;
   
   Game() {
-  }
-  
-  Game(PApplet theApplet) {
+  } 
+  Game(PApplet theApplet) {      
     this.theApplet = theApplet;
     this.controlP5 = new ControlP5(theApplet);
     
@@ -40,7 +40,7 @@ class Game {
 
     theCounter    = new Counter();
     isServer      = true;
-    
+
 
     theTable      = new Table[8];
     theIntro      = new Intro(theApplet);
@@ -57,6 +57,16 @@ class Game {
       int yTable = (int) map(i, 4, 7, 50, height - 50);
       theTable[i] = new Table(width - 70, yTable, 30, 30);
     }
+
+    //Setup sound
+    String[] soundList = {    
+      "select.wav", "kick.wav", "kickhit.wav", "tick.wav", "tock.wav", "lose.wav", "win.wav"
+    };
+    minim = new Minim(this.theApplet);
+    sounds = new AudioSample[soundList.length];
+    for (int i=0; i< soundList.length; i++) {
+      sounds[i] = this.minim.loadSample(soundList[i], 2048);
+    }
   }
 
   /**
@@ -64,9 +74,9 @@ class Game {
    */
   public void start() {
     theIntro.isServer();
-//    theIntro.isServer();
+    //    theIntro.isServer();
     theIntro.hide();
-
+    sounds[0].trigger();
     // Free up intro memory ??
   }
 
@@ -76,12 +86,12 @@ class Game {
       theIntro.draw();
     }
     else { // Game has started!
-      if( !hasPlayStarted ) {
+      if ( !hasPlayStarted ) {
         startOfGame();
         hasPlayStarted = true;
           //theCounter.startCounting();
       }
-      if( clientConnected || singlePlayerTest ) {
+      if ( clientConnected || singlePlayerTest ) {
         
         // Don't start the counter until the client is connected
         // Prevents server 'head start'
@@ -89,22 +99,30 @@ class Game {
           theCounter.startCounting();
           
         if ( !theCounter.gameTimePassed() ) {
+//          if (theCounter.getTime() % 2000 < 50) {
+//            sounds[4].trigger(); //tock
+//          } 
+//          else if ( theCounter.getTime() % 1000 < 50 ) {
+//            sounds[3].trigger(); //tick
+//          }
+
+
           theCounter.tick();
           imageMode(CORNER);
           image(backgroundImage, 0, 0, width, height);
-  
+
           // Draw the tables
           for ( int i = 0; i < theTable.length; i++ ) {
-            if( theTable[i].checkCollision(leftPlayer) ) {
+            if ( theTable[i].checkCollision(leftPlayer) ) {
               leftPlayer.addDish();
             }
-            
-            if( theTable[i].checkCollision(rightPlayer) ) {
+
+            if ( theTable[i].checkCollision(rightPlayer) ) {
               rightPlayer.addDish();
             }
             theTable[i].draw();
           }
-  
+
           // Draw the players
           rightPlayer.draw( theCounter.getTime() );
           leftPlayer.draw( theCounter.getTime() );
@@ -130,18 +148,18 @@ class Game {
           fill( 236, 220, 19);
           if( isServer ) {
             // Draw winner - loser
-            if( rightPlayer.winner == true && leftPlayer.winner == true ) { // Draw
-              textAlign(CENTER,CENTER);
+            if ( rightPlayer.winner == true && leftPlayer.winner == true ) { // Draw
+              textAlign(CENTER, CENTER);
               text("DRAW", 320, 240);
               networkMessageC += "OD,";
             }
-            else if( rightPlayer.winner == true ) {
-              textAlign(CENTER,CENTER);
+            else if ( rightPlayer.winner == true ) {
+              textAlign(CENTER, CENTER);
               text("WINNER", 320, 240);
               networkMessageC += "OW,";
             }
             else { 
-              textAlign(CENTER,CENTER);
+              textAlign(CENTER, CENTER);
               text("LOSER", 320, 240);
               networkMessageC += "OL,";
             }
@@ -161,9 +179,10 @@ class Game {
             }
           }
         }
-      }else {
+      }
+      else {
         fill( 236, 220, 19);
-        textAlign(CENTER,CENTER);
+        textAlign(CENTER, CENTER);
         text("waiting for connection...", width/2, 50);
       }
     }
@@ -193,9 +212,11 @@ class Game {
     }
 
     if ( key == ' ' ) {
+      sounds[1].trigger();
       if ( isServer ) { //player is the server
         rightPlayer.stateId = 3;
         if ( leftPlayer.x + 35 > rightPlayer.x && leftPlayer.x + 35 < rightPlayer.x + 20 ) {
+          sounds[2].trigger();
           leftPlayer.stateId = 2;
           rightPlayer.goRight();
           leftPlayer.goLeft();
@@ -207,6 +228,7 @@ class Game {
         leftPlayer.stateId = 3;
         networkMessageC += "K,";
         if ( leftPlayer.x + 35 > rightPlayer.x && leftPlayer.x + 35 < rightPlayer.x + 20 ) {
+          sounds[2].trigger();
           rightPlayer.stateId = 2;
           leftPlayer.goLeft();
           rightPlayer.goRight();
@@ -216,7 +238,7 @@ class Game {
       }
     }
   }
-  
+
   // this handles the key presses from client
   public void handleClientKeys( String action) {
     if ( action.equals("OD") ) {
@@ -233,13 +255,13 @@ class Game {
     if ( action.equals("L") ) {
       leftPlayer.goLeft();
     }
-    
+
     if ( action.equals("R")) {
       if ( rightPlayer.x - 35 > leftPlayer.x ) {
         leftPlayer.goRight();
       }
     }
-    
+
     if ( action.equals("K")) {
       leftPlayer.stateId = 3;
       if ( leftPlayer.x + 35 > rightPlayer.x && leftPlayer.x + 35 < rightPlayer.x + 20 ) {
@@ -271,8 +293,8 @@ class Game {
       break;
     }
   }
-  
-  private void startOfGame(){
+
+  private void startOfGame() {
     isServer      = theIntro.isServer();
     initNetwork(theIntro.getIP());
   }
