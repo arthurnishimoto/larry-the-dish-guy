@@ -151,7 +151,7 @@ class Game {
               textAlign(CENTER,CENTER);
               text("DRAW", 320, 240);
             }
-            else if( clientWin == false ) {
+            else if( clientWin == true ) {
               textAlign(CENTER,CENTER);
               text("WINNER", 320, 240);
             }
