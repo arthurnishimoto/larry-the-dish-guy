@@ -120,4 +120,22 @@ class Dish{
     return state;
   } //getState
   
+  public void updatePlate( float x, float y, float tilt) {
+    xPos = x;
+    yPos = y;
+    currentTilt = tilt;
+  }
+  
+  public float getX() {
+    return xPos;
+  }
+  
+  public float getY() {
+    return yPos;
+  }
+  
+  public float getTilt() {
+    return currentTilt;
+  }
+  
 }// class
